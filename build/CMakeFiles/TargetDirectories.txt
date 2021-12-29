@@ -1,0 +1,3 @@
+/home/varun/Documents/Raise Task/build/CMakeFiles/rebuild_cache.dir
+/home/varun/Documents/Raise Task/build/CMakeFiles/edit_cache.dir
+/home/varun/Documents/Raise Task/build/CMakeFiles/extract_indices.dir
