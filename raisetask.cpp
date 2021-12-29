@@ -32,7 +32,6 @@ main ()
   // Convert to the templated PointCloud
   pcl::fromPCLPointCloud2 (*cloud_filtered_blob, *cloud_filtered);
 
-  std::cerr << "PointCloud after filtering: " << cloud_filtered->width * cloud_filtered->height << " data points." << std::endl;
 
   // Write the downsampled version to disk
   pcl::PCDWriter writer;
@@ -71,7 +70,6 @@ main ()
     extract.setIndices (inliers);
     extract.setNegative (false);
     extract.filter (*cloud_p);
-    std::cerr << "PointCloud representing the planar component: " << cloud_p->width * cloud_p->height << " data points." << std::endl;
 
     std::stringstream ss;
     ss << "table_scene_lms400_plane_" << i << ".pcd";
@@ -87,15 +85,15 @@ main ()
   pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer ("3D Viewer"));
   viewer->setBackgroundColor (0, 0, 0);
   pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> single_color(cloud_p, 0, 255, 0);
-  viewer->addPointCloud<pcl::PointXYZ> (cloud_p, single_color, "sample cloud");
-  //viewer->addPointCloud<pcl::PointXYZ> (cloud_filtered, "nottable");
+  viewer->addPointCloud<pcl::PointXYZ> (cloud_p, single_color, "Table");
+  viewer->addPointCloud<pcl::PointXYZ> (cloud_filtered, "Everything Else");
   viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 3, "sample cloud");
   viewer->addCoordinateSystem (1.0);
   viewer->initCameraParameters ();
   while (!viewer->wasStopped ())
   {
     viewer->spinOnce (100);
-    // viewer2->spinOnce(100);
+    viewer2->spinOnce(100);
   }
   return (0);
 }
