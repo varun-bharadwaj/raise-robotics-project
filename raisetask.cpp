@@ -36,7 +36,7 @@ main ()
 
   // Fill in the cloud data
   pcl::PCDReader reader;
-  reader.read ("data/data8.pcd", *cloud_blob);
+  reader.read ("data/data10.pcd", *cloud_blob);
 
   // Create the filtering object: downsample the dataset using a leaf size of 1cm
   pcl::VoxelGrid<pcl::PCLPointCloud2> sor;
@@ -85,7 +85,7 @@ main ()
     pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor2;
     sor2.setInputCloud (cloud_p);
     sor2.setMeanK (500);
-    sor2.setStddevMulThresh (0.01);
+    sor2.setStddevMulThresh (0.001);
     sor2.filter (*cloud_filtered_outliers);
 
     pcl::ProjectInliers<pcl::PointXYZ> proj;
@@ -111,7 +111,7 @@ main ()
       minRunningSum = currIndex;
       pcl::copyPointCloud(*cloud_filtered_outliers, *table_cloud);
     }
-
+    std::cerr << "Segment " << counter <<" : " << currIndex << endl;
     counter++;
   }
 
@@ -137,8 +137,8 @@ main ()
 
 /* EXTRA FUNCTIONS USED TO DETERMINE IF CLOUD IS TABLE OR NOT */
 
-//standard deviation
-float standardDeviation(std::vector<float> v)
+//variance
+float variance(std::vector<float> v)
 {
     float sum=0;
     for(float coord : v)
@@ -147,7 +147,7 @@ float standardDeviation(std::vector<float> v)
     float E=0;
     for(int i=0;i<v.size();i++)
             E+=(v[i] - ave)*(v[i] - ave);
-    return sqrt(1/ static_cast<float>(v.size())*E);
+    return 1/ static_cast<float>(v.size())*E;
 }
 
 
@@ -193,8 +193,7 @@ float getRectangleIndex(pcl::PointCloud<pcl::PointXYZ>::Ptr CloudHull){
     }
 
   //Orientation is calculated by standard deviation with respect to y axis
-  float yDev = standardDeviation(yCoords) * 10;
-
-  return runningSum + yDev;
+  float yDev = variance(yCoords);
+  return (runningSum * yDev);
 }
 
